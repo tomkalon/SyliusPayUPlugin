@@ -49,7 +49,7 @@ final class PayUGatewayConfigurationType extends AbstractType
                     'attr' => [
                         'class' => 'form-select',
                     ],
-                ]
+                ],
             )
             ->add(
                 'signature_key',
@@ -68,7 +68,7 @@ final class PayUGatewayConfigurationType extends AbstractType
                     'attr' => [
                         'class' => 'form-control',
                     ],
-                ]
+                ],
             )
             ->add(
                 'pos_id',
@@ -87,7 +87,7 @@ final class PayUGatewayConfigurationType extends AbstractType
                     'attr' => [
                         'class' => 'form-control',
                     ],
-                ]
+                ],
             )
             ->add(
                 'oauth_client_id',
@@ -106,7 +106,7 @@ final class PayUGatewayConfigurationType extends AbstractType
                     'attr' => [
                         'class' => 'form-control',
                     ],
-                ]
+                ],
             )
             ->add(
                 'oauth_client_secret',
@@ -125,7 +125,7 @@ final class PayUGatewayConfigurationType extends AbstractType
                     'attr' => [
                         'class' => 'form-control',
                     ],
-                ]
+                ],
             );
     }
 
@@ -133,7 +133,7 @@ final class PayUGatewayConfigurationType extends AbstractType
     {
         $resolver->setDefaults([
             'attr' => [
-                'class' => 'row'
+                'class' => 'row',
             ],
         ]);
     }

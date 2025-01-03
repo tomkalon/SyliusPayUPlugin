@@ -45,8 +45,8 @@ final class PayUContext implements Context
     }
 
     /**
-     * @When I confirm my order with PayU payment
      * @Given I have confirmed my order with PayU payment
+     * @When I confirm my order with PayU payment
      */
     public function iConfirmMyOrderWithPayUPayment(): void
     {
@@ -70,8 +70,8 @@ final class PayUContext implements Context
     }
 
     /**
-     * @When I cancel my PayU payment
      * @Given I have cancelled PayU payment
+     * @When I cancel my PayU payment
      */
     public function iCancelMyPayUPayment(): void
     {
