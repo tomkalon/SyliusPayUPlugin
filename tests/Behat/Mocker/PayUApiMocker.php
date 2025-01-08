@@ -12,65 +12,79 @@ namespace Tests\BitBag\SyliusPayUPlugin\Behat\Mocker;
 
 use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridge;
 use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridgeInterface;
+use Mockery;
 use OpenPayU_Result;
-use Sylius\Behat\Service\Mocker\Mocker;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class PayUApiMocker
 {
-    /** @var Mocker */
-    private $mocker;
+    private ContainerInterface $container;
+    private ?Mockery\MockInterface $mockedService = null;
 
-    public function __construct(Mocker $mocker)
+    public function __construct(ContainerInterface $container)
     {
-        $this->mocker = $mocker;
+        $this->container = $container;
     }
 
-    public function mockApiSuccessfulPaymentResponse(callable $action): void
+    /**
+     * @Given /^the PayU API will return a successful payment response$/
+     */
+    public function mockApiSuccessfulPaymentResponse(): void
     {
-        $service = $this->mocker
-            ->mockService('bitbag.payu_plugin.bridge.open_payu', OpenPayUBridgeInterface::class);
+        $mock = Mockery::mock(OpenPayUBridgeInterface::class);
+        $mock->shouldReceive('create')->andReturn($this->createResponseSuccessfulApi());
+        $mock->shouldReceive('setAuthorizationData')->andReturnNull();
 
-        $service->shouldReceive('create')->andReturn($this->createResponseSuccessfulApi());
-        $service->shouldReceive('setAuthorizationData');
-
-        $action();
-
-        $this->mocker->unmockAll();
+        $this->container->set('bitbag.payu_plugin.bridge.open_payu', $mock);
     }
 
     public function completedPayment(callable $action): void
     {
-        $service = $this->mocker
-            ->mockService('bitbag.payu_plugin.bridge.open_payu', OpenPayUBridgeInterface::class);
-
-        $service->shouldReceive('retrieve')->andReturn(
-            $this->getDataRetrieve(OpenPayUBridge::COMPLETED_API_STATUS),
-        );
-        $service->shouldReceive('create')->andReturn($this->createResponseSuccessfulApi());
-        $service->shouldReceive('setAuthorizationData');
+        $this->mockService(OpenPayUBridgeInterface::class, [
+            'retrieve' => $this->getDataRetrieve(OpenPayUBridge::COMPLETED_API_STATUS),
+            'create' => $this->createResponseSuccessfulApi(),
+            'setAuthorizationData' => null,
+        ]);
 
         $action();
 
-        $this->mocker->unmockAll();
+        $this->unmockAll();
     }
 
     public function canceledPayment(callable $action): void
     {
-        $service = $this->mocker
-            ->mockService('bitbag.payu_plugin.bridge.open_payu', OpenPayUBridgeInterface::class);
-
-        $service->shouldReceive('retrieve')->andReturn(
-            $this->getDataRetrieve(OpenPayUBridge::CANCELED_API_STATUS),
-        );
-        $service->shouldReceive('create')->andReturn($this->createResponseSuccessfulApi());
-        $service->shouldReceive('setAuthorizationData');
+        $this->mockService(OpenPayUBridgeInterface::class, [
+            'retrieve' => $this->getDataRetrieve(OpenPayUBridge::CANCELED_API_STATUS),
+            'create' => $this->createResponseSuccessfulApi(),
+            'setAuthorizationData' => null,
+        ]);
 
         $action();
 
-        $this->mocker->unmockAll();
+        $this->unmockAll();
     }
 
-    private function getDataRetrieve($statusPayment): OpenPayU_Result
+    private function mockService(string $serviceId, array $methods): void
+    {
+        $mock = Mockery::mock($serviceId);
+
+        foreach ($methods as $method => $returnValue) {
+            $mock->shouldReceive($method)->andReturn($returnValue);
+        }
+
+        $this->mockedService = $mock;
+        $this->container->set('bitbag.payu_plugin.bridge.open_payu', $mock);
+    }
+
+    private function unmockAll(): void
+    {
+        if ($this->mockedService !== null) {
+            Mockery::close();
+            $this->mockedService = null;
+        }
+    }
+
+    private function getDataRetrieve(string $statusPayment): OpenPayU_Result
     {
         $openPayUResult = new OpenPayU_Result();
 

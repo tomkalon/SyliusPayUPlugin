@@ -4,7 +4,7 @@
     <services>
 
         <service id="bitbag.payu_plugin.page.external" class="Tests\BitBag\SyliusPayUPlugin\Behat\Mocker\PayUApiMocker" public="true">
-            <argument type="service" id="sylius.behat.mocker"/>
+            <argument type="service" id="service_container"/>
         </service>
 
         <service id="bitbag.payu_plugin.page_checkout.external" class="Tests\BitBag\SyliusPayUPlugin\Behat\Page\External\PayUCheckoutPage" parent="sylius.behat.page" public="true">

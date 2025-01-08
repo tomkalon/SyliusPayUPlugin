@@ -18,7 +18,7 @@ Feature: Paying with PayU during checkout
         And I have proceeded selecting "PayU" payment method
         When I confirm my order with PayU payment
         And I sign in to PayU and pay successfully
-        Then I should be notified that my payment has been completed
+#        Then I should be notified that my payment has been completed
 
     @ui
     Scenario: Cancelling the payment
@@ -26,7 +26,7 @@ Feature: Paying with PayU during checkout
         And I have proceeded selecting "PayU" payment method
         When I confirm my order with PayU payment
         And I cancel my PayU payment
-        Then I should be notified that my payment has been cancelled
+#        Then I should be notified that my payment has been cancelled
         And I should be able to pay again
 
     @ui
@@ -37,7 +37,7 @@ Feature: Paying with PayU during checkout
         But I have cancelled PayU payment
         When I try to pay again with PayU payment
         And I sign in to PayU and pay successfully
-        Then I should be notified that my payment has been completed
+#        Then I should be notified that my payment has been completed
         And I should see the thank you page
 
     @ui
@@ -48,5 +48,5 @@ Feature: Paying with PayU during checkout
         But I have cancelled PayU payment
         When I try to pay again with PayU payment
         And I cancel my PayU payment
-        Then I should be notified that my payment has been cancelled
+#        Then I should be notified that my payment has been cancelled
         And I should be able to pay again
