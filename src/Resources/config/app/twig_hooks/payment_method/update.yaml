@@ -1,6 +1,6 @@
 sylius_twig_hooks:
     hooks:
-        'sylius_admin.payment_method.create.content.form.sections.gateway_configuration.payu':
+        'sylius_admin.payment_method.update.content.form.sections.gateway_configuration.payu':
             payu_config:
                 template: '@BitBagSyliusPayUPlugin/Admin/payment_method/form/sections/gateway_configuration/payu_config.html.twig'
                 priority: 20
