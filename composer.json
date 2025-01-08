@@ -15,7 +15,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "sylius/sylius": "v2.0.0",
+        "sylius/sylius": "~2.0",
         "dompdf/dompdf": "^2.0",
         "openpayu/openpayu": "^2.2",
         "sylius/twig-hooks": "^0.5",
