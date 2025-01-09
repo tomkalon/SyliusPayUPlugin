@@ -1,3 +1,0 @@
-imports:
-    - { resource: "@BitBagSyliusPayUPlugin/Resources/config/services.xml" }
-    - { resource: "@BitBagSyliusPayUPlugin/Resources/config/app/twig_hooks/twig_hooks.yaml" }

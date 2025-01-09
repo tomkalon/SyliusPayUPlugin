@@ -1,2 +1,0 @@
-imports:
-  - { resource: "@BitBagSyliusPayUPlugin/Resources/config/app/twig_hooks/payment_method/*.yaml" }
