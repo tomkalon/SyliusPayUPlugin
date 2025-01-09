@@ -26,7 +26,6 @@ final readonly class CapturePaymentRequestHandler
 
     public function __invoke(CapturePaymentRequest $capturePaymentRequest): void
     {
-        dd($capturePaymentRequest);
         $paymentRequest = $this->paymentRequestProvider->provide($capturePaymentRequest);
 
         $this->stateMachine->apply(

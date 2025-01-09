@@ -7,12 +7,13 @@
         <service id="bitbag.payu_plugin.command_provider.payu_payment"
                  class="Sylius\Bundle\PaymentBundle\CommandProvider\ActionsCommandProvider">
             <argument type="tagged_locator" tag="bitbag.payu_plugin.command_provider.payu_payment" index-by="action"/>
-            <tag name="sylius.payment_request.command_provider" gateway-factory="sylius_payment"/>
+            <tag name="sylius.payment_request.command_provider" gateway-factory="payu_payment"/>
         </service>
 
         <service id="bitbag.payu_plugin.command_provider.payu_payment.capture"
                  class="BitBag\SyliusPayUPlugin\CommandProvider\CapturePaymentRequestCommandProvider">
             <tag name="bitbag.payu_plugin.command_provider.payu_payment" action="!php/const Sylius\Component\Payment\Model\PaymentRequestInterface::ACTION_CAPTURE"/>
         </service>
+
     </services>
 </container>

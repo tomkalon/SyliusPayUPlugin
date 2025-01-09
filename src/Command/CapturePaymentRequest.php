@@ -17,7 +17,5 @@ class CapturePaymentRequest implements PaymentRequestHashAwareInterface
 {
     use PaymentRequestHashAwareTrait;
 
-    public function __construct(protected ?string $hash) {
-        dd($hash);
-    }
+    public function __construct(protected ?string $hash) {}
 }

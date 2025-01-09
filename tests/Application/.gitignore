@@ -9,7 +9,7 @@
 
 /node_modules
 
-/config/secrets
+/config/encryption
 
 ###> symfony/framework-bundle ###
 /.env.*.local
