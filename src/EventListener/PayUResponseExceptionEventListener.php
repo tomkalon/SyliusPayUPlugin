@@ -39,6 +39,8 @@ final class PayUResponseExceptionEventListener
     {
         $exception = $event->getThrowable();
 
+//        dd($exception);
+
         if ($exception instanceof PayUResponseException) {
             $message = PayUResponseException::getTranslationByMessage($exception->getMessage());
             $order = $exception->getOrder();

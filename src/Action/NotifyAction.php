@@ -59,6 +59,7 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
      */
     public function execute($request): void
     {
+        dd('NotifyAction');
         RequestNotSupportedException::assertSupports($this, $request);
         /** @var PaymentInterface $payment */
         $payment = $request->getFirstModel();

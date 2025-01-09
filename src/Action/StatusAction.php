@@ -33,6 +33,8 @@ final class StatusAction implements ActionInterface
      */
     public function setApi($api): void
     {
+        dd('setApi');
+
         if (false === is_array($api)) {
             throw new UnsupportedApiException('Not supported. Expected to be set as array.');
         }
@@ -51,6 +53,7 @@ final class StatusAction implements ActionInterface
      */
     public function execute($request): void
     {
+        dd('StatusAction');
         RequestNotSupportedException::assertSupports($this, $request);
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
