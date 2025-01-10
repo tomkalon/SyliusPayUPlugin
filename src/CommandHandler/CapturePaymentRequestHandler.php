@@ -14,6 +14,7 @@ use BitBag\SyliusPayUPlugin\Api\PayUApiInterface;
 use BitBag\SyliusPayUPlugin\Command\CapturePaymentRequest;
 use Sylius\Abstraction\StateMachine\StateMachineInterface;
 use Sylius\Bundle\PaymentBundle\Provider\PaymentRequestProviderInterface;
+use Sylius\Component\Core\Model\Payment;
 use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Sylius\Component\Payment\Model\PaymentRequestInterface;
 use Sylius\Component\Payment\PaymentRequestTransitions;
@@ -37,11 +38,15 @@ final readonly class CapturePaymentRequestHandler
             return;
         }
 
+        /** @var Payment $payment */
+        $payment = $paymentRequest->getPayment();
+
         /** @var PaymentMethodInterface $paymentMethod */
-        $paymentMethod = $paymentRequest->getPayment()->getMethod();
+        $paymentMethod = $payment->getMethod();
         Assert::notNull($paymentMethod, 'Payment method cannot be null');
 
         $this->api->setApi($paymentMethod);
+        $orderData = $this->api->prepareOrder($payment);
 
         $this->stateMachine->apply(
             $paymentRequest,
