@@ -49,10 +49,8 @@ final class OpenPayUBridge implements OpenPayUBridgeInterface
     public function create(array $order): ?OpenPayU_Result
     {
         try {
-            dd($order);
             /** @var OpenPayU_Result|null $result */
             $result = OpenPayU_Order::create($order);
-            dd($result);
 
             return $result;
         } catch (\OpenPayU_Exception $exception) {

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace spec\BitBag\SyliusPayUPlugin\Action;
 
-use BitBag\SyliusPayUPlugin\Action\ConvertPaymentAction;
+use BitBag\SyliusPayUPlugin\Api\ConvertPaymentAction;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Model\PaymentInterface;

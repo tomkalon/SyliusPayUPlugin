@@ -38,6 +38,8 @@ interface OpenPayUBridgeInterface
 
     public const REJECTED_STATUS = 'REJECTED';
 
+    public const PAYU_PAYMENT_FACTORY_NAME = 'payu_payment';
+
     public function setAuthorizationData(
         string $environment,
         string $signatureKey,

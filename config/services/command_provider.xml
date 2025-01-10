@@ -12,7 +12,12 @@
 
         <service id="bitbag.payu_plugin.command_provider.payu_payment.capture"
                  class="BitBag\SyliusPayUPlugin\CommandProvider\CapturePaymentRequestCommandProvider">
-            <tag name="bitbag.payu_plugin.command_provider.payu_payment" action="!php/const Sylius\Component\Payment\Model\PaymentRequestInterface::ACTION_CAPTURE"/>
+            <tag name="bitbag.payu_plugin.command_provider.payu_payment" action="capture"/>
+        </service>
+
+        <service id="bitbag.payu_plugin.command_provider.payu_payment.status"
+                 class="BitBag\SyliusPayUPlugin\CommandProvider\PaymentStatusCommandProvider">
+            <tag name="bitbag.payu_plugin.command_provider.payu_payment" action="status" />
         </service>
 
     </services>

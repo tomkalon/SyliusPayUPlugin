@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace spec\BitBag\SyliusPayUPlugin\Action;
 
-use BitBag\SyliusPayUPlugin\Action\NotifyAction;
+use BitBag\SyliusPayUPlugin\Api\NotifyAction;
 use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridgeInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;

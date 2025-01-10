@@ -10,11 +10,15 @@ declare(strict_types=1);
 
 namespace BitBag\SyliusPayUPlugin\CommandHandler;
 
+use BitBag\SyliusPayUPlugin\Api\PayUApiInterface;
 use BitBag\SyliusPayUPlugin\Command\CapturePaymentRequest;
 use Sylius\Abstraction\StateMachine\StateMachineInterface;
 use Sylius\Bundle\PaymentBundle\Provider\PaymentRequestProviderInterface;
+use Sylius\Component\Core\Model\PaymentMethodInterface;
+use Sylius\Component\Payment\Model\PaymentRequestInterface;
 use Sylius\Component\Payment\PaymentRequestTransitions;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Webmozart\Assert\Assert;
 
 #[AsMessageHandler]
 final readonly class CapturePaymentRequestHandler
@@ -22,11 +26,22 @@ final readonly class CapturePaymentRequestHandler
     public function __construct(
         private PaymentRequestProviderInterface $paymentRequestProvider,
         private StateMachineInterface $stateMachine,
+        private PayUApiInterface $api,
     ) {}
 
     public function __invoke(CapturePaymentRequest $capturePaymentRequest): void
     {
         $paymentRequest = $this->paymentRequestProvider->provide($capturePaymentRequest);
+
+        if (PaymentRequestInterface::STATE_PROCESSING === $paymentRequest->getState()) {
+            return;
+        }
+
+        /** @var PaymentMethodInterface $paymentMethod */
+        $paymentMethod = $paymentRequest->getPayment()->getMethod();
+        Assert::notNull($paymentMethod, 'Payment method cannot be null');
+
+        $this->api->setApi($paymentMethod);
 
         $this->stateMachine->apply(
             $paymentRequest,

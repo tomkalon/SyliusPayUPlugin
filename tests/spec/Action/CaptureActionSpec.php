@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace spec\BitBag\SyliusPayUPlugin\Action;
 
-use BitBag\SyliusPayUPlugin\Action\CaptureAction;
+use BitBag\SyliusPayUPlugin\Api\CaptureAction;
 use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridgeInterface;
 use Iterator;
 use Payum\Core\Bridge\Spl\ArrayObject;
