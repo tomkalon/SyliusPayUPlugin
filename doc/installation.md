@@ -48,7 +48,7 @@ Import required config in your `config/packages/_sylius.yaml` file:
 
 imports:
     ...
-    - { resource: "@BitBagSyliusPayUPlugin/Resources/config/app/config.yaml" }
+    - { resource: "@BitBagSyliusPayUPlugin/config/config.yaml" }
 ```
 
 ### Clear application cache by using command:
