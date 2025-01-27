@@ -16,6 +16,7 @@ use Sylius\Abstraction\StateMachine\StateMachineInterface;
 use Sylius\Bundle\PaymentBundle\Provider\PaymentRequestProviderInterface;
 use Sylius\Component\Core\Model\Payment;
 use Sylius\Component\Core\Model\PaymentMethodInterface;
+use Sylius\Component\Core\OrderCheckoutTransitions;
 use Sylius\Component\Payment\Model\PaymentRequestInterface;
 use Sylius\Component\Payment\PaymentRequestTransitions;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -48,10 +49,16 @@ final readonly class CapturePaymentRequestHandler
         $this->api->setApi($paymentMethod);
         $orderData = $this->api->prepareOrder($payment);
 
-        $this->stateMachine->apply(
-            $paymentRequest,
-            PaymentRequestTransitions::GRAPH,
-            PaymentRequestTransitions::TRANSITION_COMPLETE
+        Assert::true(
+            $this->stateMachine->can($paymentRequest, PaymentRequestTransitions::GRAPH, PaymentRequestTransitions::TRANSITION_COMPLETE),
+            sprintf('Order with %s token cannot be completed.', $orderData['tokenValue'])
         );
+
+        $this->stateMachine->apply($paymentRequest, PaymentRequestTransitions::GRAPH, PaymentRequestTransitions::TRANSITION_COMPLETE);
+//        $this->stateMachine->apply(
+//            $paymentRequest,
+//            PaymentRequestTransitions::GRAPH,
+//            PaymentRequestTransitions::TRANSITION_PROCESS
+//        );
     }
 }

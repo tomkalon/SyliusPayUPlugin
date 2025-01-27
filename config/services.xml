@@ -23,28 +23,5 @@
             <tag name="kernel.event_listener" event="kernel.exception" method="onPayuOpenException" />
         </service>
 
-        <service id="bitbag.sylius_payu_plugin.command_provider.sylius_payment"
-                 class="Sylius\Bundle\PaymentBundle\Provider\ActionsHttpResponseProvider">
-            <argument type="tagged_locator"
-                      tag="bitbag.sylius_payu_plugin.command_provider.sylius_payment"
-                      index-by="action"/>
-            <tag name="sylius.payment_request.provider.http_response"
-                 gateway-factory="sylius_payment"/>
-        </service>
-
-        <service id="bitbag.sylius_payu_plugin.command_provider.sylius_payment.capture"
-                 class="BitBag\SyliusPayUPlugin\CommandProvider\CapturePaymentRequestCommandProvider">
-            <tag name="bitbag.sylius_payu_plugin.command_provider.sylius_payment"
-                 action="capture"/>
-        </service>
-
-        <service id="bitbag.sylius_payu_plugin.provider.order_pay.http_response.sylius_payment"
-                 class="Sylius\Bundle\PaymentBundle\Provider\ActionsHttpResponseProvider">
-            <argument type="tagged_locator"
-                      tag="bitbag.sylius_payu_plugin.provider.http_response.sylius_payment"
-                      index-by="action"/>
-            <tag name="sylius.payment_request.provider.http_response"
-                 gateway-factory="sylius_payment"/>
-        </service>
     </services>
 </container>
