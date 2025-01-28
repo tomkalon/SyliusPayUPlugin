@@ -54,11 +54,10 @@ final readonly class CapturePaymentRequestHandler
             sprintf('Order with %s token cannot be completed.', $orderData['tokenValue'])
         );
 
-        $this->stateMachine->apply($paymentRequest, PaymentRequestTransitions::GRAPH, PaymentRequestTransitions::TRANSITION_COMPLETE);
-//        $this->stateMachine->apply(
-//            $paymentRequest,
-//            PaymentRequestTransitions::GRAPH,
-//            PaymentRequestTransitions::TRANSITION_PROCESS
-//        );
+        $this->stateMachine->apply(
+            $paymentRequest,
+            PaymentRequestTransitions::GRAPH,
+            PaymentRequestTransitions::TRANSITION_PROCESS
+        );
     }
 }
