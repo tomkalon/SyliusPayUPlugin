@@ -1,12 +1,12 @@
 #parameters:
 #    bitbag.payu_plugin.state_machine.supported_factories:
-#        - 'stripe_checkout'
-#        - 'stripe_web_elements'
+#        - 'payu_checkout'
+#        - 'pay_web_elements'
 #
 #services:
 #    bitbag.payu_plugin.state_machine.payment_state:
 #        abstract: true
-#        class: FluxSE\SyliusStripePlugin\StateMachine\PaymentStateProcessor
+#        class: BitBag\SyliusPayUPlugin\StateMachine\PaymentStateProcessor
 #        arguments:
 #            - '@sylius.provider.payment_request.gateway_factory_name'
 #            - '@sylius.checker.finalized_payment_request'
