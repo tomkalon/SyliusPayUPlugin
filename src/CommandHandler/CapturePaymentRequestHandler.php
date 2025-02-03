@@ -61,34 +61,31 @@ final readonly class CapturePaymentRequestHandler
 
         $this->paymentTransitionProcessor->process($paymentRequest);
         //-------------
-        $url = $response->redirectUri;
-        //-------------
-        $headers['Location'] = $url;
+//        $url = $response->redirectUri;
+//        //-------------
+//        $headers['Location'] = $url;
 
-        $prepareContent = sprintf('<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="refresh" content="1;url=%1$s" />
-
-        <title>Redirecting to %1$s</title>
-    </head>
-    <body>
-        Redirecting to %1$s.
-    </body>
-</html>', htmlspecialchars($url, ENT_QUOTES, 'UTF-8'));
+//        $prepareContent = sprintf('<!DOCTYPE html>
+//<html>
+//    <head>
+//        <meta charset="UTF-8" />
+//        <meta http-equiv="refresh" content="1;url=%1$s" />
+//
+//        <title>Redirecting to %1$s</title>
+//    </head>
+//    <body>
+//        Redirecting to %1$s.
+//    </body>
+//</html>', htmlspecialchars($url, ENT_QUOTES, 'UTF-8'));
 
         //$this->prepareContent($url), $statusCode, $headers
-        $statusCode = 302;
-        $prepareContent, $statusCode, $headers
+//        $statusCode = 302;
+//        $prepareContent, $statusCode, $headers
         //-----FOR TEST---------
 //        header('Location: '.$response->redirectUri);
 //        die();
         //--------------------------
-        Assert::true(
-            $this->stateMachine->can($paymentRequest, PaymentRequestTransitions::GRAPH, PaymentRequestTransitions::TRANSITION_PROCESS),
-            sprintf('Order with %s token cannot be completed.', $orderData['tokenValue'])
-        );
+
         $this->stateMachine->apply(
             $paymentRequest,
             PaymentRequestTransitions::GRAPH,

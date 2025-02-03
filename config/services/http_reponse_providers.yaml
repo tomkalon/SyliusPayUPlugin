@@ -1,0 +1,18 @@
+services:
+    
+    bitbag.payu_plugin.provider.http_response.checkout:
+        class: Sylius\Bundle\PaymentBundle\Provider\ActionsHttpResponseProvider
+        arguments:
+            - !tagged_locator
+                tag: bitbag.payu_plugin.provider.http_response.checkout
+                index_by: action
+        tags:
+            - name: sylius.payment_request.provider.http_response
+              'gateway-factory': 'stripe_checkout'
+
+
+    bitbag.payu_plugin.provider.http_response.checkout.capture:
+        class: BitBag\SyliusPayUPlugin\OrderPay\Provider\Checkout\CaptureHttpResponseProvider
+        tags:
+            - name: bitbag.payu_plugin.provider.http_response.checkout
+              action: !php/const Sylius\Component\Payment\Model\PaymentRequestInterface::ACTION_CAPTURE
