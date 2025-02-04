@@ -1,0 +1,11 @@
+services:
+    
+    bitbag.payu_plugin.shop.provider.after_url:
+        class: BitBag\SyliusPayUPlugin\Provider\SyliusShopAfterUrlProvider
+        arguments:
+            - '@sylius_shop.provider.order_pay.after_pay_url'
+
+    bitbag.payu_plugin.shop.provider.payu_payment.after_url:
+        decorates: bitbag.payu_plugin.provider.payu_payment.after_url.default
+        parent: bitbag.payu_plugin.shop.provider.after_url
+            

@@ -1,0 +1,175 @@
+parameters:
+    bitbag.payu_plugin.payu_payment.after_urls:
+      !php/const BitBag\SyliusPayUPlugin\Provider\AfterUrlProviderInterface::CANCEL_URL: ~
+      !php/const BitBag\SyliusPayUPlugin\Provider\AfterUrlProviderInterface::SUCCESS_URL: ~
+
+services:
+
+    bitbag.payu_plugin.provider.payu_payment.after_url.default:
+        class: BitBag\SyliusPayUPlugin\Provider\DefaultAfterUrlProvider
+        arguments:
+            - '%bitbag.payu_plugin.payu_payment.after_urls%'
+
+    bitbag.payu_plugin.provider.payu_payment.create.params:
+        class: BitBag\SyliusPayUPlugin\Provider\CompositeParamsProvider
+        arguments:
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.inner_params
+        
+    bitbag.payu_plugin.provider.payu_payment.create.after_url:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\AfterUrlProvider
+        arguments:
+            - '@bitbag.payu_plugin.provider.payu_payment.after_url.default'
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.inner_params
+              priority: -100
+        
+    bitbag.payu_plugin.provider.payu_payment.create.mode.payment:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\ModePaymentProvider
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.inner_params
+              priority: -200
+    
+    bitbag.payu_plugin.provider.payu_payment.create.customer_email:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\CustomerEmailProvider
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.inner_params
+              priority: -300
+
+    bitbag.payu_plugin.provider.payu_payment.create.payment_method_types:
+        class: BitBag\SyliusPayUPlugin\Provider\PaymentMethodTypesProvider
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.inner_params
+              priority: -400
+
+    bitbag.payu_plugin.provider.payu_payment.create.payment_intent_data:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\PaymentIntentDataProvider
+        arguments:
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.payment_intent_data
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.inner_params
+              priority: -500
+
+    bitbag.payu_plugin.provider.payu_payment.create.payment_intent_data.capture_method.manual:
+        class: BitBag\SyliusPayUPlugin\Provider\PaymentIntentCaptureMethodManualProvider
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.payment_intent_data
+              priority: -100
+
+    bitbag.payu_plugin.provider.payu_payment.create.line_items:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItemsProvider
+        arguments:
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.inner_params
+              priority: -600
+
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\OrderItemLineItemProvider
+        arguments:
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.inner
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item
+              priority: -100
+        
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.quantity:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\QuantityProvider
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.inner
+              priority: -100
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.inner
+              priority: -100
+    
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\OrderItemPriceDataProvider
+        arguments:
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.inner
+              priority: -200
+
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data.product_data:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\PriceData\OrderItemProductDataProvider
+        arguments:
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data.product_data
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data
+              priority: -100
+
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.price_data.uni_amount:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\PriceData\UnitAmountProvider
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data
+              priority: -200
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.price_data
+              priority: -200
+
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.price_data.currency:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\PriceData\CurrencyProvider
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data
+              priority: -300
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.price_data
+              priority: -300
+    
+    fbitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data.product_data.images:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\PriceData\ProductData\ProductImagesProvider
+        arguments:
+            - '@liip_imagine.cache.manager'
+            - '%payu_payment.line_item_image.imagine_filter%'
+            - '%payu_payment.line_item_image.fallback_image%'
+            - '%payu_payment.line_item_image.localhost_pattern%'
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data.product_data
+              priority: -100
+
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data.product_data.name:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\PriceData\ProductData\ProductNameProvider
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.order_item.price_data.product_data
+              priority: -200
+
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\ShipmentLineItemProvider
+        arguments:
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.inner
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment
+              priority: -100
+
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.price_data:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\ShipmentPriceDataProvider
+        arguments:
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.price_data
+        tags:
+            -   name: bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.inner
+                priority: -200
+
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.price_data.product_data:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\PriceData\ShipmentProductDataProvider
+        arguments:
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.price_data.product_data
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.price_data
+              priority: -100
+
+    bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.price_data.product_data.name:
+        class: BitBag\SyliusPayUPlugin\Provider\Checkout\Create\LineItem\PriceData\ProductData\ShipmentNameProvider
+        tags:
+            - name: bitbag.payu_plugin.provider.payu_payment.create.line_item.shipment.price_data.product_data
+              priority: -100
+
+    bitbag.payu_plugin.provider.payu_paymentcreate.metadata:
+        class: BitBag\SyliusPayUPlugin\Provider\CompositeMetadataParamsProvider
+        arguments:
+            - !tagged_iterator bitbag.payu_plugin.provider.payu_payment.create.metadata
+        tags:
+            -   name: bitbag.payu_plugin.provider.payu_payment.create.inner_params
+                priority: -700
+
+    bitbag.payu_plugin.provider.payu_payment.create.metadata.token_hash:
+        class: BitBag\SyliusPayUPlugin\Provider\TokenHashMetadataProvider
+        tags:
+            -   name: bitbag.payu_plugin.provider.payu_payment.create.metadata
+                priority: -100
+

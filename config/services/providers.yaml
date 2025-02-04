@@ -1,0 +1,16 @@
+imports:
+    - { resource: 'providers/*.yaml' }
+
+parameters:
+    bitbag.payu_plugin.factories:
+        - payu_payment
+
+#services:
+#
+#    BitBag\SyliusPayUPlugin\Provider\StripeNotifyPaymentProvider:
+#        arguments:
+#            - '%bitbag.payu_plugin.factories%'
+#            - '@sylius.repository.payment_request'
+#            - '@bitbag.payu_plugin.stripe.resolver.event_resolver'
+#        tags:
+#            - name: sylius.payment_request.payment_notify_provider
