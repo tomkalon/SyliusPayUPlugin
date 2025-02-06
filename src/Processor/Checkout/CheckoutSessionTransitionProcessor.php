@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace BitBag\SyliusPayUPlugin\Processor\Checkout;
 
+use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridge;
 use BitBag\SyliusPayUPlugin\Processor\PaymentTransitionProcessorInterface;
+use OpenPayU_Order;
 use Sylius\Abstraction\StateMachine\StateMachineInterface;
 use Sylius\Component\Payment\Model\PaymentRequestInterface;
 use Sylius\Component\Payment\PaymentTransitions;
@@ -13,6 +15,7 @@ final readonly class CheckoutSessionTransitionProcessor implements PaymentTransi
 {
     public function __construct(
         private StateMachineInterface $stateMachine,
+        private OpenPayUBridge  $openPayUBridge,
     ) {
     }
 
@@ -20,23 +23,24 @@ final readonly class CheckoutSessionTransitionProcessor implements PaymentTransi
     {
         $payment = $paymentRequest->getPayment();
         $details = $payment->getDetails();
-//        $session = Session::constructFrom($details);
+        $payUResult = $this->openPayUBridge->retrieve($details['orderId']);
 
- //       $transition = $this->getTransition($session);
 
-//        if (null === $transition) {
-//            return;
-//        }
-//
-//        if ($this->stateMachine->can($payment, PaymentTransitions::GRAPH, $transition)) {
-//            $this->stateMachine->apply($payment, PaymentTransitions::GRAPH, $transition);
-//        }
+        $transition = $this->getTransition($payUResult);
+
+        if (null === $transition) {
+            return;
+        }
+
+        if ($this->stateMachine->can($payment, PaymentTransitions::GRAPH, $transition)) {
+            $this->stateMachine->apply($payment, PaymentTransitions::GRAPH, $transition);
+        }
     }
 
-    private function getTransition(Session $session): ?string
+    private function getTransition(\OpenPayU_Result $payUResult): ?string
     {
-        $status = $session->status;
-        $paymentStatus = $session->payment_status;
+        $status = $payUResult->getSuccess();
+        $paymentStatus = $payUResult->getStatus();
 
         if ($this->isCompleteStatus($status, $paymentStatus)) {
             return PaymentTransitions::TRANSITION_COMPLETE;
@@ -53,9 +57,10 @@ final readonly class CheckoutSessionTransitionProcessor implements PaymentTransi
         return null;
     }
 
-    private function isCompleteStatus(?string $status, string $paymentStatus): bool
+    private function isCompleteStatus(?bool $status, string $paymentStatus): bool
     {
-        if (Session::STATUS_COMPLETE !== $status) {
+
+        if (true !== $status) {
             return false;
         }
 
@@ -69,9 +74,9 @@ final readonly class CheckoutSessionTransitionProcessor implements PaymentTransi
 
     private function isProcessStatus(?string $status, string $paymentStatus): bool
     {
-        if (Session::STATUS_COMPLETE !== $status) {
-            return false;
-        }
+//        if (Session::STATUS_COMPLETE !== $status) {
+//            return false;
+//        }
 
         return Session::PAYMENT_STATUS_UNPAID === $paymentStatus;
     }

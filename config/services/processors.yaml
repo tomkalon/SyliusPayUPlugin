@@ -4,4 +4,5 @@ services:
         class: BitBag\SyliusPayUPlugin\Processor\Checkout\CheckoutSessionTransitionProcessor
         arguments:
             - '@sylius_abstraction.state_machine'
+            - '@bitbag.payu_plugin.bridge.open_payu'
     

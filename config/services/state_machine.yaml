@@ -1,42 +1,41 @@
-#parameters:
-#    bitbag.payu_plugin.state_machine.supported_factories:
-#        - 'payu_checkout'
-#        - 'pay_web_elements'
-#
-#services:
-#    bitbag.payu_plugin.state_machine.payment_state:
-#        abstract: true
-#        class: BitBag\SyliusPayUPlugin\StateMachine\PaymentStateProcessor
-#        arguments:
-#            - '@sylius.provider.payment_request.gateway_factory_name'
-#            - '@sylius.checker.finalized_payment_request'
-#            - '@sylius.factory.payment_request'
-#            - '@sylius.repository.payment_request'
-#            - '@sylius.announcer.payment_request'
-#            - '%bitbag.payu_plugin.state_machine.supported_factories%'
-#
-#    bitbag.payu_plugin.state_machine.refund:
-#        public: true
-#        parent: bitbag.payu_plugin.state_machine.payment_state
-#        arguments:
-#            - []
-#            - !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_REFUNDED
-#            - !php/const Sylius\Component\Payment\Model\PaymentRequestInterface::ACTION_REFUND
-#
-#    bitbag.payu_plugin.state_machine.cancel:
-#        public: true
-#        parent: bitbag.payu_plugin.state_machine.payment_state
-#        arguments:
-#            - 0: !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_NEW
-#              1: !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_AUTHORIZED
-#            - !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_CANCELLED
-#            - !php/const Sylius\Component\Payment\Model\PaymentRequestInterface::ACTION_CANCEL
-#
-#
-#    bitbag.payu_plugin.state_machine.capture_authorized:
-#        public: true
-#        parent: bitbag.payu_plugin.state_machine.payment_state
-#        arguments:
-#            - 0: !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_AUTHORIZED
-#            - !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_COMPLETED
-#            - !php/const Sylius\Component\Payment\Model\PaymentRequestInterface::ACTION_AUTHORIZE
+parameters:
+    bitbag.payu_plugin.state_machine.supported_factories:
+        - 'payu_payment'
+
+services:
+    bitbag.payu_plugin.state_machine.payment_state:
+        abstract: true
+        class: BitBag\SyliusPayUPlugin\StateMachine\PaymentStateProcessor
+        arguments:
+            - '@sylius.provider.payment_request.gateway_factory_name'
+            - '@sylius.checker.finalized_payment_request'
+            - '@sylius.factory.payment_request'
+            - '@sylius.repository.payment_request'
+            - '@sylius.announcer.payment_request'
+            - '%bitbag.payu_plugin.state_machine.supported_factories%'
+
+    bitbag.payu_plugin.state_machine.refund:
+        public: true
+        parent: bitbag.payu_plugin.state_machine.payment_state
+        arguments:
+            - []
+            - !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_REFUNDED
+            - !php/const Sylius\Component\Payment\Model\PaymentRequestInterface::ACTION_REFUND
+
+    bitbag.payu_plugin.state_machine.cancel:
+        public: true
+        parent: bitbag.payu_plugin.state_machine.payment_state
+        arguments:
+            - 0: !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_NEW
+              1: !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_AUTHORIZED
+            - !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_CANCELLED
+            - !php/const Sylius\Component\Payment\Model\PaymentRequestInterface::ACTION_CANCEL
+
+
+    bitbag.payu_plugin.state_machine.capture_authorized:
+        public: true
+        parent: bitbag.payu_plugin.state_machine.payment_state
+        arguments:
+            - 0: !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_AUTHORIZED
+            - !php/const Sylius\Component\Payment\Model\PaymentInterface::STATE_COMPLETED
+            - !php/const Sylius\Component\Payment\Model\PaymentRequestInterface::ACTION_AUTHORIZE
