@@ -1,0 +1,25 @@
+services:
+  bitbag.payu_plugin.command_provider.payu_payment.capture.handler:
+    class: BitBag\SyliusPayUPlugin\CommandHandler\CapturePaymentRequestHandler
+    arguments:
+      - '@sylius.provider.payment_request'
+      - '@sylius_abstraction.state_machine'
+      - '@bitbag.payu_plugin.api.payu_api'
+      - '@bitbag.payu_plugin.bridge.open_payu'
+      - '@bitbag.payu_plugin.processor.payment_transition.checkout'
+      - '@sylius_shop.provider.order_pay.after_pay_url'
+    tags:
+      - { name: 'messenger.message_handler', bus: 'sylius.payment_request.command_bus' }
+
+  bitbag.payu_plugin.command_handlers.payu_payment.status:
+    class: BitBag\SyliusPayUPlugin\CommandHandler\StatusPaymentRequestHandler
+    arguments:
+      - '@sylius.provider.payment_request'
+      - '@bitbag.payu_plugin.manager.checkout.retrieve'
+      - '@bitbag.payu_plugin.processor.payment_transition.checkout'
+      - '@sylius_abstraction.state_machine'
+    tags:
+      - name: messenger.message_handler
+        bus: sylius.payment_request.command_bus
+        handles: BitBag\SyliusPayUPlugin\Command\StatusPaymentRequest
+

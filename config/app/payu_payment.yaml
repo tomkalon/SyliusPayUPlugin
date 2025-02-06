@@ -1,0 +1,7 @@
+payu_payment:
+    gateway_config:
+        validation_groups:
+            payu_payment:
+                - sylius
+                - payu
+                - payu_payment

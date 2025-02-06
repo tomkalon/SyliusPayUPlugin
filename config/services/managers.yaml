@@ -1,0 +1,8 @@
+services:
+  bitbag.payu_plugin.manager.checkout.retrieve:
+    class: BitBag\SyliusPayUPlugin\Manager\Checkout\RetrieveManager
+    arguments:
+#      - '@bitbag.payu_plugin.payu.factory.client'
+#      - '@bitbag.payu_plugin.provider.checkout.retrieve.params'
+  BitBag\SyliusPayUPlugin\Manager\Checkout\RetrieveManagerInterface:
+    alias: bitbag.payu_plugin.manager.checkout.retrieve

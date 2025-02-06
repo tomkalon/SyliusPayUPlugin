@@ -15,12 +15,14 @@ use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridge;
 use BitBag\SyliusPayUPlugin\Command\CapturePaymentRequest;
 use BitBag\SyliusPayUPlugin\Processor\PaymentTransitionProcessorInterface;
 use Sylius\Abstraction\StateMachine\StateMachineInterface;
+use Sylius\Bundle\CoreBundle\OrderPay\Provider\UrlProviderInterface;
 use Sylius\Bundle\PaymentBundle\Provider\PaymentRequestProviderInterface;
 use Sylius\Component\Core\Model\Payment;
 use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Sylius\Component\Payment\Model\PaymentRequestInterface;
 use Sylius\Component\Payment\PaymentRequestTransitions;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Webmozart\Assert\Assert;
 
 #[AsMessageHandler]
@@ -32,6 +34,7 @@ final readonly class CapturePaymentRequestHandler
         private PayUApiInterface $api,
         private OpenPayUBridge  $openPayUBridge,
         private PaymentTransitionProcessorInterface $paymentTransitionProcessor,
+        private UrlProviderInterface $afterPayUrlProvider,//TODO: move to manager, provider
     ) {}
 
     public function __invoke(CapturePaymentRequest $capturePaymentRequest): void
@@ -51,6 +54,7 @@ final readonly class CapturePaymentRequestHandler
 
         $this->api->setApi($paymentMethod);
         $orderData = $this->api->prepareOrder($payment);
+        $orderData['continueUrl'] = $this->afterPayUrlProvider->getUrl($paymentRequest, UrlGeneratorInterface::ABSOLUTE_URL);;
         $result = $this->openPayUBridge->create($orderData);
         $response = $result->getResponse();
         $paymentRequest->setResponseData([
@@ -60,31 +64,6 @@ final readonly class CapturePaymentRequestHandler
         $paymentRequest->getPayment()->setDetails((array)$response);
 
         $this->paymentTransitionProcessor->process($paymentRequest);
-        //-------------
-//        $url = $response->redirectUri;
-//        //-------------
-//        $headers['Location'] = $url;
-
-//        $prepareContent = sprintf('<!DOCTYPE html>
-//<html>
-//    <head>
-//        <meta charset="UTF-8" />
-//        <meta http-equiv="refresh" content="1;url=%1$s" />
-//
-//        <title>Redirecting to %1$s</title>
-//    </head>
-//    <body>
-//        Redirecting to %1$s.
-//    </body>
-//</html>', htmlspecialchars($url, ENT_QUOTES, 'UTF-8'));
-
-        //$this->prepareContent($url), $statusCode, $headers
-//        $statusCode = 302;
-//        $prepareContent, $statusCode, $headers
-        //-----FOR TEST---------
-//        header('Location: '.$response->redirectUri);
-//        die();
-        //--------------------------
 
         $this->stateMachine->apply(
             $paymentRequest,
